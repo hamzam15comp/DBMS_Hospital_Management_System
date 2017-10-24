@@ -24,7 +24,7 @@ if((isset($_GET['pid']))&&($_GET['pid']==01))
 		if((!strcmp($row['Username'],$_POST['login']))&&(!strcmp($row['Password'],$_POST['password'])))
 		{
 			$username=$_POST['login'];
-			$result=mysqli_query($link, "select * from session where username='$username'");
+			$result=mysqli_query($link, "select * from Session where username='$username'");
 			$row=mysqli_fetch_array($result);
 			if(strcmp($row['Username'],""))
 			{
@@ -35,7 +35,7 @@ if((isset($_GET['pid']))&&($_GET['pid']==01))
 				session_start();
 				$sessionid=$_COOKIE['PHPSESSID'];
 				$_SESSION['username']=$username;
-				mysqli_query($link, "insert into session value ('$username','$sessionid')");
+				mysqli_query($link, "insert into Session value ('$username','$sessionid')");
 				setcookie("username",$_POST['login'],time()+3600);
 				header('Location: login.php');
 			}
