@@ -23,7 +23,11 @@ Create table if not exists Patients(
 
 Create table if not exists Room(
 	Room_No varchar(255) PRIMARY KEY,
+<<<<<<< HEAD
 	Type varchar(255) DEFAULT 'GEN',
+=======
+	Room_Type varchar(255) DEFAULT 'GEN',
+>>>>>>> dec79e1d62a90d9758098e59b46e795b26259fd9
 	Phone_Ext varchar(255),
 	Rent float(15,2),
 	Patient_ID varchar(255)

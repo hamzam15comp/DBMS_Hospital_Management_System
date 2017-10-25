@@ -26,7 +26,7 @@ if((isset($_GET['pid']))&&($_GET['pid']==01))
         if((!strcmp($row['Username'],$_POST['login']))&&(!strcmp($row['Password'],$_POST['password'])))
         {
             $username=$_POST['login'];
-            $result=mysqli_query($link, "select * from Session where username='$username'");
+            $result=mysqli_query($link, "select * from Session where Username='$username'");
             $row=mysqli_fetch_array($result);
             if(strcmp($row['Username'],""))
             {
@@ -37,7 +37,7 @@ if((isset($_GET['pid']))&&($_GET['pid']==01))
                 session_start();
                 $sessionid=$_COOKIE['PHPSESSID'];
                 $_SESSION['username']=$username;
-                mysqli_query($link, "insert into Session value ('$username','$sessionid')");
+                mysqli_query($link, "insert into Session value ('$username','$sessionid')"); // Thinking of adding privileges here
                 setcookie("username",$_POST['login'],time()+3600);
                 header('Location: login.php');
             }
@@ -102,6 +102,13 @@ if((isset($_GET['pid']))&&($_GET['pid']==01))
               Username<span class="req">*</span>
             </label>
             <input type="text" name="login" value=""></p>
+        </div>
+        
+        <div class="field-wrap">
+            <label>
+              Employee<span class="req">*</span>
+            </label>
+            <input type="text" name="employee" value=""></p>
         </div>
 
         <div class="field-wrap">

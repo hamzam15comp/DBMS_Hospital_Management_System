@@ -347,7 +347,7 @@ if(!isset($_GET['pid']) || (isset($_GET['pid']) && (strcmp($_GET['pid'],"account
     echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
     $username=$_COOKIE['username'];
     $sessionid=$_COOKIE['PHPSESSID'];
-    $row=mysqli_query($link, "select * from Session where username='$username' and id='$sessionid'");
+    $row=mysqli_query($link, "select * from Session where Username='$username' and ID='$sessionid'");
     if(!empty($row)&&(mysqli_num_rows($row)))
     {
         $result=mysqli_query($link, "select * from Employee where Employee_ID='$username'");
@@ -779,7 +779,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_patient")==0)||(strcmp(
     if((strcmp($_GET['pid'],"patient_details")==0))
     {
         $searchby=$_GET['id'];
-        $result=mysqli_query($link, "select * from patients where Patient_ID='$searchby'");
+        $result=mysqli_query($link, "select * from Patients where Patient_ID='$searchby'");
         echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
         $row=mysqli_fetch_array($result);
         $name=$row['Name'];
@@ -820,8 +820,8 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_patient")==0)||(strcmp(
         if(!empty($searchby)&&(($searchby[0]=='P')||($searchby[0]=='p')))
         {
             if(empty($searchbyaname))
-                $result=mysqli_query($link, "select * from patients where Patient_ID='$searchby'");
-            else $result=mysqli_query($link, "select * from patients p, accompanies a where p.Patient_ID='$searchby' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%'");
+                $result=mysqli_query($link, "select * from Patients where Patient_ID='$searchby'");
+            else $result=mysqli_query($link, "select * from Patients p, accompanies a where p.Patient_ID='$searchby' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%'");
             if(!empty($result) && mysqli_num_rows($result)==1)
             {
                 echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
@@ -1075,9 +1075,9 @@ else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"logout")==0))
 {
     $username=$_COOKIE['username'];
     $sessionid=$_COOKIE['PHPSESSID'];
-    if(mysqli_query($link, "select * from session where username='$username' and id='$sessionid'"))
+    if(mysqli_query($link, "select * from Session where Username='$username' and ID='$sessionid'"))
     {
-        $result=mysqli_query($link, "delete from session where username='$username'and id='$sessionid'");
+        $result=mysqli_query($link, "delete from Session where Username='$username'and ID='$sessionid'");
         setcookie("username",$_POST['username'],time()-3600);
         unset($_SESSION['PHPSESSID']);
         header('Location: index.php');
@@ -1090,7 +1090,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_dept")==0)||(strcmp($_G
 {
     if((strcmp($_GET['pid'],"view_dept")==0))
     {
-        $result=mysqli_query($link, "select * from departments");
+        $result=mysqli_query($link, "select * from Departments");
         echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
         echo "<div style=\"width:900px; float:left;\">";
         for($i=0;$i<mysqli_num_rows($result);$i=$i+1)
@@ -1108,13 +1108,13 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_dept")==0)||(strcmp($_G
     else if((strcmp($_GET['pid'],"dept_details")==0))
     {
         $searchby=$_GET['id'];
-        $result=mysqli_query($link, "select * from departments where Dept_No='$searchby'");
+        $result=mysqli_query($link, "select * from Departments where Dept_No='$searchby'");
         echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
         $row=mysqli_fetch_array($result);
         $name=$row['Name'];
         $d_id=$row['Dept_No'];
         $loc=$row['Location'];
-        $nem=$row['NOE'];
+        //$nem=$row['NOE'];
         echo "<h3>Department Details</h3>";
         echo "<table border=5 cellpadding=1 cellspacing=0 style=\"margin:5px 0px 0px -3px;border-collapse: collapse;\">";
         echo "<tr><td width=5%>Name: </td><td width=50%>$name</td></tr>";
@@ -1179,10 +1179,10 @@ else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"del_dept")==0))
     {
         if(!empty($_POST['dept_id']))
             $d_id=$_POST['dept_id'];
-        $res=mysqli_query($link, "select * from departments where Dept_No='$d_id';");
+        $res=mysqli_query($link, "select * from Departments where Dept_No='$d_id';");
         if(mysqli_num_rows($res)!=0)
         {
-            mysqli_query($link, "delete from departments where Dept_No='$d_id';");
+            mysqli_query($link, "delete from Departments where Dept_No='$d_id';");
             header('Location: login.php?pid=view_dept');
         }
         else
@@ -1207,7 +1207,7 @@ else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"add_dept")==0))
         $n=$_POST["nm"];
         $i=$_POST["id"];
         $l=$_POST["loc"];
-        $result=mysqli_query($link, "select * from departments where Dept_No='$i';");
+        $result=mysqli_query($link, "select * from Departments where Dept_No='$i';");
         if(mysqli_num_rows($result)==0)
         {
             mysqli_query($link, "insert into Departments values (\"$n\",\"$l\",\"$i\",0);");
@@ -1234,7 +1234,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"mod_dept")==0)))
         $id=$_POST['id'];
         if(isset($id))
         {
-            $result=mysqli_query($link, "select * from departments where Dept_No='$id'; ");
+            $result=mysqli_query($link, "select * from Departments where Dept_No='$id'; ");
             if(isset($result)&&(mysqli_num_rows($result)!=0	))
             {
                 $row=mysqli_fetch_array($result);
@@ -1552,7 +1552,7 @@ else if(isset($_GET['pid']) && strcmp($_GET['pid'],"create_report") == 0)
     echo "<td><p>Patient ID: <input type=\"text\" name=\"PID\" size=\"15\" maxlength=\"15\" required/></p>";
     echo "</tr>";
     echo "<tr><td>Dept No.</td><td><select name=\"dept_no\">";
-    $result=mysqli_query($link, "select * from departments");
+    $result=mysqli_query($link, "select * from Departments");
     for($i=0;$i<mysqli_num_rows($result);$i=$i+1)
     {
         $row=mysqli_fetch_array($result);
@@ -1604,7 +1604,7 @@ else if(isset($_GET['pid']) && strcmp($_GET['pid'],"mod_report") == 0)
     echo "<td><p>Report No.: <input type=\"text\" name=\"R_num\" size=\"15\" maxlength=\"15\" required/></p>";
     echo "</tr>";
     echo "<tr><td><p>Dept number: <select name=\"dept\">";
-    $result=mysqli_query($link, "select * from departments");
+    $result=mysqli_query($link, "select * from Departments");
     for($i=0;$i<mysqli_num_rows($result);$i=$i+1)
     {
         $row=mysqli_fetch_array($result);
@@ -1720,7 +1720,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_report")==0)||(strcmp($
         $id=$row['Patient_ID'];
         $result2=mysqli_query($link, "select * from patients where Patient_ID='$id'");
         $result4=mysqli_query($link, "select * from diagnosis where Report_No='$num'");
-        $dept=mysqli_query($link, "select * from departments d,give_details g where g.Report_No='$num' and g.Department_No=d.Dept_No");
+        $dept=mysqli_query($link, "select * from Departments d,give_details g where g.Report_No='$num' and g.Department_No=d.Dept_No");
         $deptrow=mysqli_fetch_array($dept);
         $deptname=$deptrow['Name'];
         $row2=mysqli_fetch_array($result2);
@@ -1832,7 +1832,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_report")==0)||(strcmp($
                 $id=$row['Patient_ID'];
                 $result2=mysqli_query($link, "select * from patients where Patient_ID='$id'");
                 $result4=mysqli_query($link, "select * from diagnosis where Report_No='$num'");
-                $dept=mysqli_query($link, "select * from departments d,give_details g where g.Report_No='$num' and g.Department_No=d.Dept_No");
+                $dept=mysqli_query($link, "select * from Departments d,give_details g where g.Report_No='$num' and g.Department_No=d.Dept_No");
                 $deptrow=mysqli_fetch_array($dept);
                 $deptname=$deptrow['Name'];
                 $row2=mysqli_fetch_array($result2);
