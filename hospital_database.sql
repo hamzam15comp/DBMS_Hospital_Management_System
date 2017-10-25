@@ -21,6 +21,14 @@ Create table if not exists Patients(
 	Blood_Group varchar(5)
 	)ENGINE INNODB;
 
+create table Departments(
+    Name varchar(255) NOT NULL, 
+    Location varchar(255) NOT NULL, 
+    Dept_No varchar(255) NOT NULL, 
+    PRIMARYKEY(Dept_No)
+    ) ENGINE INNODB;
+
+
 Create table if not exists Room(
 	Room_No varchar(255) PRIMARY KEY,
 	Room_Type varchar(255) DEFAULT 'GEN',
@@ -60,18 +68,15 @@ Create Table if not exists attends(
 	FOREIGN KEY (Doc_ID) References Doctors(Doc_ID) ON DELETE CASCADE
 	)ENGINE INNODB;
 	
-
-
-/*
 Create table Passwords(
 	Username varchar(255) PRIMARY KEY,
 	Password varchar(255) NOT NULL,
 	FOREIGN KEY (Username) References Employee(Employee_ID) ON DELETE CASCADE ON UPDATE CASCADE
-	)ENGINE INNODB;");
+	)ENGINE INNODB;
+
 Create table Session(
 	Username varchar(255) NOT NULL,
 	ID varchar(255) PRIMARY KEY
-	) ENGINE INNODB;
-*/
+	)ENGINE INNODB;
 
 

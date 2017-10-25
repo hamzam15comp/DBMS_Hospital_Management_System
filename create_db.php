@@ -1,9 +1,103 @@
 <?php
+ini_set('display_startup_errors',1);                                                                                                                              ini_set('display_errors',1);                                                    
+error_reporting(-1);
+
 require("include/dbinfo.php");
 $LINK_SERVER=mysqli_connect($server,$user,$pass)or die(errorReport(mysqli_error()));
-//echo $db;
-mysqli_query($LINK_SERVER, "create database $db");
+mysqli_query($LINK_SERVER, "create database if not exists $db");
+mysqli_select_db($LINK_SERVER, $db)or die(errorReport(mysqli_error()));
 mysqli_query($LINK_SERVER, "use $db");
+
+mysqli_query($LINK_SERVER, "Create table Departments(
+    Name varchar(255) NOT NULL, 
+    Location varchar(255) NOT NULL, 
+    Dept_No varchar(255) NOT NULL, 
+    PRIMARY KEY(Dept_No) 
+    )ENGINE INNODB;");
+
+mysqli_query($LINK_SERVER, "Create table if not exists Employee(
+	Employee_ID varchar(255) PRIMARY KEY,
+	Name varchar(255) NOT NULL,
+	Address varchar(255) NOT NULL,
+	DOB date NOT NULL,
+	Contact varchar(25),
+	Gender varchar(10) NOT NULL,
+	Salary float(15,3) DEFAULT 0,
+    Category varchar(25),
+    Dept_No varchar(255) NOT NULL, 
+    FOREIGN KEY (Dept_No) References Departments(Dept_No) ON DELETE CASCADE ON UPDATE CASCADE
+	)ENGINE=INNODB;");
+	
+mysqli_query($LINK_SERVER, "Create table if not exists Patients(
+	Patient_ID varchar(255) PRIMARY KEY,
+	Name varchar(255) NOT NULL,
+	Address varchar(255) NOT NULL,
+	DOB date NOT NULL,
+	Contact varchar(25),
+	Gender varchar(10) NOT NULL,
+	D_Adm date NOT NULL,
+	D_Dis date,
+	Blood_Group varchar(5)
+	)ENGINE INNODB;");
+	
+mysqli_query($LINK_SERVER, "Create table if not exists Room(
+	Room_No varchar(255) PRIMARY KEY,
+	Room_Type varchar(255) DEFAULT 'GEN',
+	Phone_Ext varchar(255),
+	Rent float(15,2),
+	Patient_ID varchar(255)
+	)ENGINE INNODB;");
+
+mysqli_query($LINK_SERVER, "Create table if not exists Assigned(
+	Patient_ID varchar(255) PRIMARY KEY,
+	Room_No varchar(255),
+	FOREIGN KEY (Patient_ID) References Patients(Patient_ID) ON DELETE CASCADE,
+	FOREIGN KEY (Room_No) References Room(Room_No) ON DELETE CASCADE
+	)ENGINE INNODB;");
+
+mysqli_query($LINK_SERVER, "Create table if not exists Doctors(
+	Doc_ID varchar(255) PRIMARY KEY,
+	Spz varchar(255),
+	Employee_ID varchar(255) NOT NULL UNIQUE,
+	FOREIGN KEY (Employee_ID) References Employee(Employee_ID) ON DELETE CASCADE ON UPDATE CASCADE
+	)ENGINE INNODB;");
+
+mysqli_query($LINK_SERVER, "Create table if not exists Bill(
+	Bill_No varchar(255) PRIMARY KEY,
+	Patient_ID varchar(255),
+	Report_ID varchar(255),
+	Totamt int,
+	FOREIGN KEY (Patient_ID) References Patients(Patient_ID) ON DELETE CASCADE
+	)ENGINE INNODB;");
+	
+mysqli_query($LINK_SERVER, "Create Table if not exists attends(
+	Doc_ID varchar(255),
+	Patient_ID varchar(255),
+	PRIMARY KEY(Doc_ID, Patient_ID),
+	FOREIGN KEY (Patient_ID) References Patients(Patient_ID) ON DELETE CASCADE,
+	FOREIGN KEY (Doc_ID) References Doctors(Doc_ID) ON DELETE CASCADE
+	)ENGINE INNODB;");
+	
+mysqli_query($LINK_SERVER, "Create table Passwords(
+	Username varchar(255) PRIMARY KEY,
+	Password varchar(255) NOT NULL,
+	FOREIGN KEY (Username) References Employee(Employee_ID) ON DELETE CASCADE ON UPDATE CASCADE
+	)ENGINE INNODB;");
+	
+mysqli_query($LINK_SERVER, "Create table Session(
+	Username varchar(255) NOT NULL,
+	ID varchar(255) PRIMARY KEY
+	)ENGINE INNODB;");
+	
+
+mysqli_query($LINK_SERVER, "insert into Departments values (\"IT Department\",\"Sector 68\",\"IT-101\");");
+mysqli_query($LINK_SERVER, "insert into Departments values (\"Cardiography Department\",\"Sector 71\",\"CAR-101\");");
+mysqli_query($LINK_SERVER, "insert into Employee value (\"IT-1\",\"Andrew\",\"Delhi\",\"1987-01-02\",null,\"Male\",20000,\"Adminstration\",\"IT-101\");");
+mysqli_query($LINK_SERVER, "insert into Passwords value (\"IT-1\",\"IT-1\");");
+
+
+
+/*
 //mysqli_select_db($db,$LINK_SERVER)or die(errorReport(mysqli_error()));
 mysqli_query($LINK_SERVER, "create table Patients(Patient_ID varchar(255) PRIMARY KEY, Name varchar(255) NOT NULL, Address varchar(255) NOT NULL, DOB date NOT NULL, Contact varchar(25), Gender varchar(10) NOT NULL, Blood_Group varchar(5)) ENGINE INNODB;");
 mysqli_query($LINK_SERVER, "create table Departments(Name varchar(255) NOT NULL, Location varchar(255) NOT NULL, Dept_No varchar(255) NOT NULL, PRIMARY KEY(Dept_No) ) ENGINE INNODB;");
@@ -29,6 +123,6 @@ mysqli_query($LINK_SERVER, "create table Vehicle_Given(Reg_No varchar(255),ID va
 mysqli_query($LINK_SERVER, "create table Governed_By(Employee_ID varchar(255), Room_No varchar(255), Date date NOT NULL,Join_Time time NOT NULL,Leave_Time time not null,PRIMARY KEY (Employee_ID,Room_No,Date), FOREIGN KEY (Room_No) References Room(Room_No) ON DELETE CASCADE ON UPDATE CASCADE,FOREIGN KEY (Employee_ID) References Employee(Employee_ID) ON DELETE CASCADE ON UPDATE CASCADE) ENGINE INNODB;");
 mysqli_query($LINK_SERVER, "insert into Departments values (\"IT Department\",\"Sector 68\",\"IT-101\");");
 mysqli_query($LINK_SERVER, "insert into Employee values (\"IT-1\",\"Andrew\",\"Delhi\",\"1987-01-02\",null,\"Male\",20000,\"Adminstration\",\"IT-101\");");
-mysqli_query($LINK_SERVER, "insert into Passwords values (\"IT-1\",\"IT-1\");");
-/*if($ROW = mysqli_fetch_array($RESULT))*/
+mysqli_query($LINK_SERVER, "insert into Passwords values (\"IT-1\",\"IT-1\");");*/
+
 ?>
