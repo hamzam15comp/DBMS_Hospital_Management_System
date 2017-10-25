@@ -643,7 +643,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"add_patient")==0)))
 {
     if(isset($_GET['option'])&&(strcmp($_GET['option'],"insert")==0))
     {
-        $result=mysqli_query($link, "select max(Patient_ID) count from patients;");
+        $result=mysqli_query($link, "select max(Patient_ID) count from Patients;");
         $name=$_POST['name'];
         $address=$_POST['address'];
         $dob=$_POST['dob'];
@@ -659,7 +659,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"add_patient")==0)))
         else if(strlen($id)<9)
         $id="P00".($id+1);*/
         $id="P".(substr($id,1)+1);
-        mysqli_query($link, "insert into patients values (\"$id\", \"$name\", \"$address\", \"$dob\", \"$contact\", \"$gender\", \"$bg\")");
+        mysqli_query($link, "insert into Patients values (\"$id\", \"$name\", \"$address\", \"$dob\", \"$contact\", \"$gender\", \"$bg\")");
         header('Location: ?pid=view_patient');
     }
     else
@@ -686,7 +686,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"del_patient")==0)))
     {
         $id=$_POST['id'];
         if(isset($id))
-            mysqli_query($link, "delete from patients where Patient_ID='$id'; ");
+            mysqli_query($link, "delete from Patients where Patient_ID='$id'; ");
         header('Location: ?pid=view_patient');
     }
     else
@@ -721,7 +721,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"mod_patient")==0)))
         $id=$_POST['id'];
         if(isset($id))
         {
-            $result=mysqli_query($link, "select * from patients where Patient_ID='$id'; ");
+            $result=mysqli_query($link, "select * from Patients where Patient_ID='$id'; ");
             if(isset($result))
             {
                 $row=mysqli_fetch_array($result);
@@ -851,36 +851,36 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_patient")==0)||(strcmp(
         if(!empty($searchby)&&($flag==0))
         {
             if(!empty($searchbysex)&&!empty($searchbyage)&&!empty($searchbyaname)&&!empty($searchbybg))
-                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and p.Gender LIKE '$searchbysex' and floor(DATEDIFF(CURDATE(),p.DOB)/365)=$searchbyage and p.Blood_Group LIKE '$searchbybg'");
+                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from Patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and p.Gender LIKE '$searchbysex' and floor(DATEDIFF(CURDATE(),p.DOB)/365)=$searchbyage and p.Blood_Group LIKE '$searchbybg'");
             else if(!empty($searchbysex)&&!empty($searchbyage)&&!empty($searchbyaname))
-                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and p.Gender LIKE '$searchbysex' and floor(DATEDIFF(CURDATE(),p.DOB)/365)=$searchbyage");
+                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from Patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and p.Gender LIKE '$searchbysex' and floor(DATEDIFF(CURDATE(),p.DOB)/365)=$searchbyage");
             else if(!empty($searchbysex)&&!empty($searchbybg)&&!empty($searchbyaname))
-                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and p.Gender LIKE '$searchbysex' and p.Blood_Group LIKE '$searchbybg'");
+                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from Patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and p.Gender LIKE '$searchbysex' and p.Blood_Group LIKE '$searchbybg'");
             else if(!empty($searchbysex)&&!empty($searchbyage)&&!empty($searchbybg))
-                $result=mysqli_query($link, "select * from patients where Name LIKE '%$searchby%' and Gender LIKE '$searchbysex' and floor(DATEDIFF(CURDATE(),p.DOB)/365)=$searchbyage and Blood_Group LIKE '$searchbybg'");
+                $result=mysqli_query($link, "select * from Patients where Name LIKE '%$searchby%' and Gender LIKE '$searchbysex' and floor(DATEDIFF(CURDATE(),p.DOB)/365)=$searchbyage and Blood_Group LIKE '$searchbybg'");
             else if(!empty($searchbyaname)&&!empty($searchbyage)&&!empty($searchbybg))
-                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and floor(DATEDIFF(CURDATE(),p.DOB)/365)=$searchbyage and p.Blood_Group LIKE '$searchbybg'");
+                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from Patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and floor(DATEDIFF(CURDATE(),p.DOB)/365)=$searchbyage and p.Blood_Group LIKE '$searchbybg'");
             else if(!empty($searchbysex)&&!empty($searchbybg))
-                $result=mysqli_query($link, "select * from patients where Name LIKE '%$searchby%' and Gender LIKE '$searchbysex' and Blood_Group LIKE '$searchbybg' ");
+                $result=mysqli_query($link, "select * from Patients where Name LIKE '%$searchby%' and Gender LIKE '$searchbysex' and Blood_Group LIKE '$searchbybg' ");
             else if(!empty($searchbysex)&&!empty($searchbyage))
-                $result=mysqli_query($link, "select * from patients where Name LIKE '%$searchby%' and Gender LIKE '$searchbysex' and floor(DATEDIFF(CURDATE(),DOB)/365)=$searchbyage");
+                $result=mysqli_query($link, "select * from Patients where Name LIKE '%$searchby%' and Gender LIKE '$searchbysex' and floor(DATEDIFF(CURDATE(),DOB)/365)=$searchbyage");
             else if(!empty($searchbybg)&&!empty($searchbyage))
-                $result=mysqli_query($link, "select * from patients where Name LIKE '%$searchby%' and Blood_Group LIKE '$searchbybg' and floor(DATEDIFF(CURDATE(),DOB)/365)=$searchbyage");
+                $result=mysqli_query($link, "select * from Patients where Name LIKE '%$searchby%' and Blood_Group LIKE '$searchbybg' and floor(DATEDIFF(CURDATE(),DOB)/365)=$searchbyage");
             else if(!empty($searchbysex)&&!empty($searchbyaname))
-                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and p.Gender LIKE '$searchbysex' ");
+                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from Patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and p.Gender LIKE '$searchbysex' ");
             else if(!empty($searchbyage)&&!empty($searchbyaname))
-                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and floor(DATEDIFF(CURDATE(),p.DOB)/365)=$searchbyage");
+                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from Patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and floor(DATEDIFF(CURDATE(),p.DOB)/365)=$searchbyage");
             else if(!empty($searchbyaname)&&!empty($searchbybg))
-                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and p.Blood_Group LIKE '$searchbybg'");
+                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from Patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%' and p.Blood_Group LIKE '$searchbybg'");
             else if(!empty($searchbysex))
-                $result=mysqli_query($link, "select * from patients where Name LIKE '%$searchby%' and Gender LIKE '$searchbysex' ");
+                $result=mysqli_query($link, "select * from Patients where Name LIKE '%$searchby%' and Gender LIKE '$searchbysex' ");
             else if(!empty($searchbybg))
-                $result=mysqli_query($link, "select * from patients where Name LIKE '%$searchby%' and Blood_Group LIKE '$searchbybg' ");
+                $result=mysqli_query($link, "select * from Patients where Name LIKE '%$searchby%' and Blood_Group LIKE '$searchbybg' ");
             else if(!empty($searchbyage))
-                $result=mysqli_query($link, "select * from patients where Name LIKE '%$searchby%' and floor(DATEDIFF(CURDATE(),DOB)/365)=$searchbyage");
+                $result=mysqli_query($link, "select * from Patients where Name LIKE '%$searchby%' and floor(DATEDIFF(CURDATE(),DOB)/365)=$searchbyage");
             else if(!empty($searchbyaname))
-                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%'");
-            else $result=mysqli_query($link, "select * from patients where Name LIKE '%$searchby%'");
+                $result=mysqli_query($link, "select p.Name,p.Patient_ID,p.Gender,p.Contact,p.DOB,p.Address,p.Blood_Group from Patients p, accompanies a where p.Name LIKE '%$searchby%' and p.Patient_ID=a.Patient_ID and a.Name LIKE '%$searchbyaname%'");
+            else $result=mysqli_query($link, "select * from Patients where Name LIKE '%$searchby%'");
             if(!empty($result) && mysqli_num_rows($result)==1)
             {
                 echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
@@ -1021,7 +1021,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_accompanies")==0)||(str
         }
         if(!empty($searchby)&&($flag==0))
         {
-            $result=mysqli_query($link, "select * from patients p,accompanies a where p.Patient_ID=a.Patient_ID and p.Name LIKE '%$searchby%'");
+            $result=mysqli_query($link, "select * from Patients p,accompanies a where p.Patient_ID=a.Patient_ID and p.Name LIKE '%$searchby%'");
             if(!empty($result) && mysqli_num_rows($result)==1)
             {
                 echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
@@ -1280,7 +1280,7 @@ else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"allot_room")==0))
         $type=$_POST["type"];
         $id=$_POST["id"];
         $date=$_POST["date"];
-        $res1=mysqli_query($link, "select * from patients where Patient_ID='$id';");
+        $res1=mysqli_query($link, "select * from Patients where Patient_ID='$id';");
         if(mysqli_num_rows($res1)==0)
         {
             echo "<script type=\"text/javascript\">alert(\"Invalid Patient ID\")</script>";
@@ -1319,7 +1319,7 @@ else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"allot_vehicle")==0))
         $type=$_POST["type"];
         $id=$_POST["id"];
         $date=$_POST["date"];
-        $res1=mysqli_query($link, "select * from patients where Patient_ID='$id';");
+        $res1=mysqli_query($link, "select * from Patients where Patient_ID='$id';");
         if(mysqli_num_rows($res1)==0)
             echo "<script type=\"text/javascript\">alert(\"Invalid Patient ID\")</script>";
         else
@@ -1460,7 +1460,7 @@ else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"allot_doc")==0))
         $pid=$_POST["pid"];
         $eid=$_POST["eid"];
         $date=$_POST["date"];
-        $pres=mysqli_query($link, "select * from patients where Patient_ID='$pid';");
+        $pres=mysqli_query($link, "select * from Patients where Patient_ID='$pid';");
         $dres=mysqli_query($link, "select * from doctors where Employee_ID='$eid';");
         $row=mysqli_fetch_array($dres);
         if(mysqli_num_rows($pres)==0)
@@ -1575,7 +1575,7 @@ else if(isset($_GET['pid']) && strcmp($_GET['pid'],"create_report") == 0)
         $r_num="R".(substr($val,1)+1);
         $pid=$_POST['PID'];
         $dept_no=$_POST['dept_no'];
-        $check = mysqli_query($link, "SELECT * FROM patients where Patient_ID='$pid'");
+        $check = mysqli_query($link, "SELECT * FROM Patients where Patient_ID='$pid'");
         //$check1 = mysqli_query($link, "SELECT * FROM medical_report where Patient_ID='$pid'");
         $row=mysqli_num_rows($check);
         //$row1=mysqli_num_rows($check1);
@@ -1718,7 +1718,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_report")==0)||(strcmp($
         $row=mysqli_fetch_array($result);
         $num=$row['Report_No'];
         $id=$row['Patient_ID'];
-        $result2=mysqli_query($link, "select * from patients where Patient_ID='$id'");
+        $result2=mysqli_query($link, "select * from Patients where Patient_ID='$id'");
         $result4=mysqli_query($link, "select * from diagnosis where Report_No='$num'");
         $dept=mysqli_query($link, "select * from Departments d,give_details g where g.Report_No='$num' and g.Department_No=d.Dept_No");
         $deptrow=mysqli_fetch_array($dept);
@@ -1830,7 +1830,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_report")==0)||(strcmp($
                 $row=mysqli_fetch_array($result);
                 $num=$row['Report_No'];
                 $id=$row['Patient_ID'];
-                $result2=mysqli_query($link, "select * from patients where Patient_ID='$id'");
+                $result2=mysqli_query($link, "select * from Patients where Patient_ID='$id'");
                 $result4=mysqli_query($link, "select * from diagnosis where Report_No='$num'");
                 $dept=mysqli_query($link, "select * from Departments d,give_details g where g.Report_No='$num' and g.Department_No=d.Dept_No");
                 $deptrow=mysqli_fetch_array($dept);
@@ -1952,7 +1952,7 @@ else if(isset($_GET['pid']) && strcmp($_GET['pid'],"del_report") == 0)
         }					
         else if(isset($search[0]))
         {
-            $result=mysqli_query($link, "select * from patients where Name='$search'");						
+            $result=mysqli_query($link, "select * from Patients where Name='$search'");						
             if(mysqli_num_rows($result)==1)
             {
                 $row=mysqli_fetch_array($result);
