@@ -330,6 +330,9 @@ tbody:hover tr:hover td {
 <!--All the main code starts here -- Pushan -->
 
 <?php
+ini_set('display_startup_errors',1);
+ini_set('display_errors',1);
+error_reporting(-1);
 ob_start();
 require("include/dbinfo.php");
 $link=mysqli_connect($server,$user,$pass)or die(errorReport(mysqli_error()));
