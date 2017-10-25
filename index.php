@@ -31,6 +31,7 @@ if((isset($_GET['pid']))&&($_GET['pid']==01))
             if(strcmp($row['Username'],""))
             {
                 echo "<script type=\"text/javascript\">alert(\"Multiple logins not allowed. Access Denied.\")</script>";
+                header('Location: error.php');
             }
             else
             {
