@@ -3,16 +3,23 @@ ini_set('display_startup_errors',1);                                            
 error_reporting(-1);
 
 require("include/dbinfo.php");
-$LINK_SERVER=mysqli_connect($server,$user,$pass)or die(errorReport(mysqli_error()));
+$LINK_SERVER=mysqli_connect($server,$user,$pass);
+if (mysqli_connect_errno()){
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
 mysqli_query($LINK_SERVER, "create database if not exists $db");
-mysqli_select_db($LINK_SERVER, $db)or die(errorReport(mysqli_error()));
+mysqli_select_db($LINK_SERVER, $db);
+if (mysqli_connect_errno()){
+    echo "Failed to connect to MySQL: " . mysqli_connect_error();
+}
+mysqli_query($LINK_SERVER, "create database if not exists $db");
 mysqli_query($LINK_SERVER, "use $db");
 
 mysqli_query($LINK_SERVER, "Create table if not exists Departments(
     Name varchar(255) NOT NULL, 
     Phone_Ext varchar(255) NOT NULL, 
     Dept_ID varchar(255) NOT NULL, 
-    Dept_charges float(15,2), NOT NULL, 
+    Dept_charges float(15,2) NOT NULL, 
     PRIMARY KEY(Dept_ID) 
     )ENGINE INNODB;");
 
@@ -59,7 +66,7 @@ mysqli_query($LINK_SERVER, "Create table if not exists Room(
 	Room_No varchar(255) PRIMARY KEY,
 	Type varchar(255) DEFAULT 'GEN',
 	Phone_Ext varchar(255),
-	Rent float(15,2),
+	Rent float(15,2)
 	)ENGINE INNODB;");
 
 mysqli_query($LINK_SERVER, "Create table if not exists Assigned(
@@ -89,8 +96,9 @@ mysqli_query($LINK_SERVER, "Create table Session(
 
 mysqli_query($LINK_SERVER, "insert into Departments values (\"IT Department\",\"6969\",\"IT\", \"10000\");");
 mysqli_query($LINK_SERVER, "insert into Departments values (\"Cardiography Department\",\"9191\",\"CAR\", \"20000\");");
-mysqli_query($LINK_SERVER, "insert into Employee value (\"101\",\"Andrew\",\"Delhi\",\"1987-01-02\",null,\"Male\",20000,\"Adminstration\",\"IT\");");
-mysqli_query($LINK_SERVER, "insert into Passwords value (\"IT-1\",\"IT-1\");");
+mysqli_query($LINK_SERVER, "insert into Employee value (\"102\",\"Pushan\",\"Pune\",\"1987-06-17\",\"8308618739\",\"Male\",100000,\"Adminstration\",\"IT\");");
+mysqli_query($LINK_SERVER, "insert into Passwords value (\"101\",\"101\");");
+mysqli_query($LINK_SERVER, "insert into Passwords value (\"102\",\"102\");");
 
 
 

@@ -14,8 +14,7 @@
 </head>
 <body>
 <?php
-if((isset($_GET['pid']))&&($_GET['pid']==01))
-{
+if((isset($_GET['pid']))&&($_GET['pid']==01)) {
     require("include/dbinfo.php");
     $link=mysqli_connect($server,$user,$pass)or die(errorReport(mysqli_error()));
     mysqli_select_db($link, $db)or die(errorReport(mysqli_error()));
@@ -47,6 +46,26 @@ if((isset($_GET['pid']))&&($_GET['pid']==01))
     }
     else echo "<script type=\"text/javascript\">alert(\"Username doesn't exist.\")</script>";
 }
+if((isset($_GET['pid']))&&($_GET['pid']==02)) {
+    require("include/dbinfo.php");
+    $link=mysqli_connect($server,$user,$pass)or die(errorReport(mysqli_error()));
+    mysqli_select_db($link, $db)or die(errorReport(mysqli_error()));
+    $newname=$_POST['user'];
+    $password=$_POST['passwd'];
+    $cpassword=$_POST['conpasswd'];
+    if(!strcmp($password, $cpassword)) {
+        $result=mysqli_query($link, "select * from Passwords where Username='$newname'");
+        $empresult=mysqli_query($link, "select * from Employee where Username='$newname'");
+        if(!mysqli_fetch_array($result) && @mysqli_fetch_array($empresult)) {
+            mysqli_query($link, "insert into Passwords value (\"$newname\",\"$password\");"); 
+            echo "<script type=\"text/javascript\">alert(\"New User Added.\")</script>";
+        }
+        else 
+            echo "<script type=\"text/javascript\">alert(\"Username already exist, or is not a Employee\")</script>";
+    }
+    else
+        echo "<script type=\"text/javascript\">alert(\"Passwords Don't match.\")</script>";
+}
 ?>
 <br/>
 
@@ -60,6 +79,7 @@ if((isset($_GET['pid']))&&($_GET['pid']==01))
     <div id="signup">   
         <h1>Sign Up for Free</h1>
         <form action="index.php?pid=02" method="post">
+    <!--
         <div class="top-row">
             <div class="field-wrap">
             <label>
@@ -75,22 +95,29 @@ if((isset($_GET['pid']))&&($_GET['pid']==01))
             <input type="text"required autocomplete="off"/>
             </div>
         </div>
+    -->
 
         <div class="field-wrap">
             <label>
-                Email Address<span class="req">*</span>
+                Enter A Username<span class="req">*</span>
             </label>
-            <input type="email"required autocomplete="off"/>
+            <input type="text" name="user" required autocomplete="off"/>
         </div>
 
         <div class="field-wrap">
             <label>
                 Set A Password<span class="req">*</span>
             </label>
-            <input type="password"required autocomplete="off"/>
+            <input type="password" name="passwd" required autocomplete="off"/>
         </div>
-
-        <button type="submit" class="button button-block"/>Get Started</button>
+        
+        <div class="field-wrap">
+            <label>
+                Confirm Password<span class="req">*</span>
+            </label>
+            <input type="password" name="conpasswd" required autocomplete="off"/>
+        </div>
+        <p class="submit"><input type="submit" name="commit" value="Create Account"></p>
 
     </form>
 </div>
@@ -105,13 +132,6 @@ if((isset($_GET['pid']))&&($_GET['pid']==01))
             <input type="text" name="login" value=""></p>
         </div>
         
-        <div class="field-wrap">
-            <label>
-              Employee<span class="req">*</span>
-            </label>
-            <input type="text" name="employee" value=""></p>
-        </div>
-
         <div class="field-wrap">
             <label>
               Password<span class="req">*</span>
