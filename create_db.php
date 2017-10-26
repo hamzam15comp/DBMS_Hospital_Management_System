@@ -86,11 +86,10 @@ mysqli_query($LINK_SERVER, "Create table Session(
 	Username varchar(255) NOT NULL,
 	ID varchar(255) PRIMARY KEY
 	)ENGINE INNODB;");
-	
 
-mysqli_query($LINK_SERVER, "insert into Departments values (\"IT Department\",\"Sector 68\",\"IT-101\");");
-mysqli_query($LINK_SERVER, "insert into Departments values (\"Cardiography Department\",\"Sector 71\",\"CAR-101\");");
-mysqli_query($LINK_SERVER, "insert into Employee value (\"IT-1\",\"Andrew\",\"Delhi\",\"1987-01-02\",null,\"Male\",20000,\"Adminstration\",\"IT-101\");");
+mysqli_query($LINK_SERVER, "insert into Departments values (\"IT Department\",\"6969\",\"IT\", \"10000\");");
+mysqli_query($LINK_SERVER, "insert into Departments values (\"Cardiography Department\",\"9191\",\"CAR\", \"20000\");");
+mysqli_query($LINK_SERVER, "insert into Employee value (\"101\",\"Andrew\",\"Delhi\",\"1987-01-02\",null,\"Male\",20000,\"Adminstration\",\"IT\");");
 mysqli_query($LINK_SERVER, "insert into Passwords value (\"IT-1\",\"IT-1\");");
 
 
