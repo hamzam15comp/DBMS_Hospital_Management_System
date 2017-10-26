@@ -8,11 +8,12 @@ mysqli_query($LINK_SERVER, "create database if not exists $db");
 mysqli_select_db($LINK_SERVER, $db)or die(errorReport(mysqli_error()));
 mysqli_query($LINK_SERVER, "use $db");
 
-mysqli_query($LINK_SERVER, "Create table Departments(
+mysqli_query($LINK_SERVER, "Create table if not exists Departments(
     Name varchar(255) NOT NULL, 
-    Location varchar(255) NOT NULL, 
-    Dept_No varchar(255) NOT NULL, 
-    PRIMARY KEY(Dept_No) 
+    Phone_Ext varchar(255) NOT NULL, 
+    Dept_ID varchar(255) NOT NULL, 
+    Dept_charges float(15,2), NOT NULL, 
+    PRIMARY KEY(Dept_ID) 
     )ENGINE INNODB;");
 
 mysqli_query($LINK_SERVER, "Create table if not exists Employee(
@@ -24,10 +25,16 @@ mysqli_query($LINK_SERVER, "Create table if not exists Employee(
 	Gender varchar(10) NOT NULL,
 	Salary float(15,3) DEFAULT 0,
     Category varchar(25),
-    Dept_No varchar(255) NOT NULL, 
-    FOREIGN KEY (Dept_No) References Departments(Dept_No) ON DELETE CASCADE ON UPDATE CASCADE
+    Dept_ID varchar(255) NOT NULL, 
+    FOREIGN KEY (Dept_ID) References Departments(Dept_ID) ON DELETE CASCADE ON UPDATE CASCADE
 	)ENGINE=INNODB;");
 	
+mysqli_query($LINK_SERVER, "Create table if not exists Doctors(
+	Doc_ID varchar(255) PRIMARY KEY,
+	Employee_ID varchar(255) NOT NULL UNIQUE,
+	FOREIGN KEY (Employee_ID) References Employee(Employee_ID) ON DELETE CASCADE ON UPDATE CASCADE
+	)ENGINE INNODB;");
+
 mysqli_query($LINK_SERVER, "Create table if not exists Patients(
 	Patient_ID varchar(255) PRIMARY KEY,
 	Name varchar(255) NOT NULL,
@@ -39,13 +46,20 @@ mysqli_query($LINK_SERVER, "Create table if not exists Patients(
 	D_Dis date,
 	Blood_Group varchar(5)
 	)ENGINE INNODB;");
+
+mysqli_query($LINK_SERVER, "Create Table if not exists Attends(
+	Doc_ID varchar(255),
+	Patient_ID varchar(255),
+	PRIMARY KEY(Doc_ID, Patient_ID),
+	FOREIGN KEY (Patient_ID) References Patients(Patient_ID) ON DELETE CASCADE,
+	FOREIGN KEY (Doc_ID) References Doctors(Doc_ID) ON DELETE CASCADE
+	)ENGINE INNODB;");
 	
 mysqli_query($LINK_SERVER, "Create table if not exists Room(
 	Room_No varchar(255) PRIMARY KEY,
-	Room_Type varchar(255) DEFAULT 'GEN',
+	Type varchar(255) DEFAULT 'GEN',
 	Phone_Ext varchar(255),
 	Rent float(15,2),
-	Patient_ID varchar(255)
 	)ENGINE INNODB;");
 
 mysqli_query($LINK_SERVER, "Create table if not exists Assigned(
@@ -55,27 +69,11 @@ mysqli_query($LINK_SERVER, "Create table if not exists Assigned(
 	FOREIGN KEY (Room_No) References Room(Room_No) ON DELETE CASCADE
 	)ENGINE INNODB;");
 
-mysqli_query($LINK_SERVER, "Create table if not exists Doctors(
-	Doc_ID varchar(255) PRIMARY KEY,
-	Spz varchar(255),
-	Employee_ID varchar(255) NOT NULL UNIQUE,
-	FOREIGN KEY (Employee_ID) References Employee(Employee_ID) ON DELETE CASCADE ON UPDATE CASCADE
-	)ENGINE INNODB;");
-
 mysqli_query($LINK_SERVER, "Create table if not exists Bill(
-	Bill_No varchar(255) PRIMARY KEY,
+	Bill_ID varchar(255) PRIMARY KEY,
 	Patient_ID varchar(255),
-	Report_ID varchar(255),
-	Totamt int,
-	FOREIGN KEY (Patient_ID) References Patients(Patient_ID) ON DELETE CASCADE
-	)ENGINE INNODB;");
-	
-mysqli_query($LINK_SERVER, "Create Table if not exists attends(
-	Doc_ID varchar(255),
-	Patient_ID varchar(255),
-	PRIMARY KEY(Doc_ID, Patient_ID),
-	FOREIGN KEY (Patient_ID) References Patients(Patient_ID) ON DELETE CASCADE,
-	FOREIGN KEY (Doc_ID) References Doctors(Doc_ID) ON DELETE CASCADE
+	Totamt float(15,2),
+	FOREIGN KEY (Patient_ID) References Patients(Patient_ID)
 	)ENGINE INNODB;");
 	
 mysqli_query($LINK_SERVER, "Create table Passwords(
