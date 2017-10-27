@@ -7,8 +7,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
   <title>Login | Hospital Management</title>
-  <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,300,      600' rel='stylesheet' type='text/css'>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/            normalize/5.0.0/normalize.min.css">
+  <link href='https://fonts.googleapis.com/css?family=Titillium+Web:400,300,600' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
   <link rel="stylesheet" href="css/style_new.css">
   <!--[if lt IE 9]><script src="//html5shim.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
 </head>
@@ -68,6 +68,7 @@ if((isset($_GET['pid']))&&($_GET['pid']==02)) {
 }
 ?>
 <br/>
+<div text-color='#000000'><h1> Hospital Management</h1></div>
 
 <div class="form">
     <ul class="tab-group">
@@ -77,7 +78,7 @@ if((isset($_GET['pid']))&&($_GET['pid']==02)) {
       
 <div class="tab-content">
     <div id="signup">   
-        <h1>Sign Up for Free</h1>
+        <h1>Sign Up</h1>
         <form action="index.php?pid=02" method="post">
     <!--
         <div class="top-row">
