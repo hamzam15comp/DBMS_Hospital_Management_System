@@ -286,13 +286,13 @@ tbody:hover tr:hover td {
         <li><a href="?pid=unallot_room">Un-allot a Room</a></li>
         </ul></li>
     
-    <li><a class="qmparent" href="#">Medical Report (Biling)</a>
+    <li><a class="qmparent" href="#">Report/Biling</a>
 
         <ul>
-        <li><a href="?pid=create_report">Create Report</a></li>
-        <li><a href="?pid=view_report">View Report</a></li>
-        <li><a href="?pid=mod_report">Modify Report</a></li>
-        <li><a href="?pid=del_report">Delete Report</a></li>
+        <li><a href="?pid=view_report">Generate Report</a></li>
+        <li><a href="?pid=create_report">Generate Bill</a></li>
+       <!--<li><a href="?pid=mod_report">Modify Report</a></li>
+        <li><a href="?pid=del_report">Delete Report</a></li>-->
         </ul></li>
 
 <li class="qmclear">&nbsp;</li></ul>
@@ -1117,17 +1117,543 @@ else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"allot_doc")==0)) {
     }
 }
 
+// Add Room
+if(isset($_GET['pid']) && strcmp($_GET['pid'],"add_room") == 0) {
+    echo "<h3> Add Room </h3>";
+    echo "<table>";
+    echo "<form action=\"#\" method=POST>";
+    echo "<tr><td>Type: </td><td><select name=\"drop\"><option value=\"Gen\">General</option><option value=\"sem\">Semi-Private</option><option value=\"pri\">Private</option><option value=\"icu\">ICU</option> </select></td></tr>";
+    echo "<tr><td> Extension: </td><td><input type=\"text\" name=\"ext\" required></td></tr>";
+    echo "</table>";
+    echo "<tr><td> <input type=\"submit\" name=\"submit\"></submit> </td></tr>";
+    echo "</form> ";
+    $flag=1;
+    if(isset($_POST['drop']) && isset($_POST['ext']) ) {
+        $ext=$_POST['ext'];
+        $check=mysqli_query($link, "select * from Room where Phone_Ext='$ext'");
+        if(mysqli_num_rows($check)>=1) {
+            $flag=0;
+        }		
+        $type=$_POST['drop'];
+        if($type=="Gen") {
+            $cost=2500.00;
+            if(isset($_POST['ext']) && $flag==1) {			
+                $ext=$_POST['ext'];
+                $result=mysqli_query($link, "select max(Room_No) R from Room");
+                $val=mysqli_fetch_array($result);
+                $test=$val['R'];
+                $room="Z".(substr($test,1)+1);
+                $query="INSERT INTO Room SET Room_No='$room',Type=\"Gen\",Phone_Ext='$ext',Rent=2500";
+                $result=mysqli_query($link, $query);
+                echo "<script type=\"text/javascript\">alert(\"Room No. $room has been added.\")</script>";
+            }
+        }
+        if($type=="pri" && $flag==1) {
+            $cost=5000.00;
+            if(isset($_POST['ext'])){			
+                $ext=$_POST['ext'];
+                $result=mysqli_query($link, "select max(Room_No) R from Room");
+                $val=mysqli_fetch_array($result);
+                $test=$val['R'];
+                $room="Z".(substr($test,1)+1);
+                $query="INSERT INTO Room SET Room_No='$room',Type=\"PRI\",Phone_Ext='$ext',Rent=5000";
+                $result=mysqli_query($link, $query);
+                echo "<script type=\"text/javascript\">alert(\"Room Added\") </script>";
+            }
+        }   
+        if($type=="sem" && $flag==1) {
+            $cost=3750.00;
+            if(isset($_POST['ext'])){			
+                $ext=$_POST['ext'];
+                $result=mysqli_query($link, "select max(Room_No) R from Room");
+                $val=mysqli_fetch_array($result);
+                $test=$val['R'];
+                $room="Z".(substr($test,1)+1);
+                $query="INSERT INTO Room SET Room_No='$room',Type=\"SEMI\",Phone_Ext='$ext',Rent=3750";
+                $result=mysqli_query($link, $query);
+                echo "<script type=\"text/javascript\">alert(\"Room Added\") </script>";
+    	    }
+        }
+        if($type=="icu" && $flag==1) {
+            $cost=7500.00;
+            if(isset($_POST['ext'])) {			
+                $ext=$_POST['ext'];
+                $result=mysqli_query($link, "select max(Room_No) R from Room");
+                $val=mysqli_fetch_array($result);
+                $test=$val['R'];
+                $room="Z".(substr($test,1)+1);
+                $query="INSERT INTO Room SET Room_No='$room',Type=\"ICU\",Phone_Ext='$ext',Rent=7500";
+                $result=mysqli_query($link, $query);
+                echo "<script type=\"text/javascript\">alert(\"Room Added\") </script>";
+            }
+        }
+        if($flag==0) {
+            echo "<script type=\"text/javascript\">alert(\"Extension already in use!\") </script>";
+        }
+    }
+}	
+
+// Delete Room
+if(isset($_GET['pid']) && strcmp($_GET['pid'],"discard_room") == 0) {
+    echo "<br/><table border=0 cellpadding=1 cellspacing=1 height=5 style=\"\"><form action=\"login.php?pid=discard_room&option=search_val\" method=\"post\">";
+    echo "<tr><td style=\"border-bottom: #FFFFFF\"><input name=\"search_val\" type=\"text\" size=50 placeholder=\"Enter Room-No, Type to delete\"></td>";
+    echo "<td style=\"border-bottom: #FFFFFF\"><input type=\"image\" name=\"commit\" value=\"submit\" src=\"images/search_button.gif\" style=\"height:30px\"></td></tr>";
+    echo "</form></table>"; 
+    if(isset($_GET['option']) && strcmp($_GET['option'],"search_val")==0) {
+        $search=$_POST['search_val'];
+        if(!empty($search) && ($search[0]=='Z' || $search[0]=='z')) {
+            $result=mysqli_query($link, "select * from Room where Room_No='$search'");
+            if(mysqli_num_rows($result)==1) {
+                $query=mysqli_query($link, "delete from Room where Room_No='$search'");
+                echo "<br/><br/><br/>";
+                echo "<script type=\"text/javascript\">alert(\"Room Discarded\") </script>";
+            }
+            else {
+                echo "<br/> <br/>";
+                echo "<script type=\"text/javascript\">alert(\"Invalid Entry\") </script>";
+            }
+        }
+        else if(!empty($search) && ($search[0]!='Z' || $search[0]!='z')) {
+            $result=mysqli_query($link, "select * from Room where Type='$search'");
+            if(mysqli_num_rows($result)==1) {
+                $query=mysqli_query($link, "delete from Room where Type='$search'");
+                echo "<br/><br/><br/>";
+                echo "<script type=\"text/javascript\">alert(\"Room discarded\") </script>";
+            }
+            else if(mysqli_num_rows($result)>=1) {
+                echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
+                echo "<div style=\"width:900px; float:left;\">";
+                for($i=0;$i<mysqli_num_rows($result);$i=$i+1) {
+                    $val=mysqli_fetch_array($result);
+                    $reg=$val['Room_No'];
+                    $type=$val['Type'];
+                    echo "<div style=\"width:900px; float:left;\">";
+                    echo "<h3 align=\"left\"><a href=\"?pid=discard_room&id=$reg\">$reg</a></h3>";
+                    echo "<p align=\"left\"><b>Type:</b> $type<br/> ";
+                    echo "</div>";
+                }
+            }
+            else {
+                echo "<br/> <br/>";
+                echo "<script type=\"text/javascript\">alert(\"Invalid Entry\") </script>";
+            }
+        }
+        else
+            echo "<script type=\"text/javascript\">alert(\"Please enter value\") </script>";
+    }
+    if(isset($_GET['id'])) {
+        $search=$_GET['id'];
+        $result=mysqli_query($link, "select * from Room where Room_No='$search'");
+        $query=mysqli_query($link, "delete from Room where Room_No='$search'");
+        echo "<br/><br/><br/>";
+        echo "<script type=\"text/javascript\">alert(\"Room Discarded\") </script>";
+    }	
+}
+
+// Search Room
+else if(isset($_GET['pid']) && strcmp($_GET['pid'],"search_room") == 0) {
+    echo "<br/><table border=0 cellpadding=1 cellspacing=1 height=5 style=\"\"><form action=\"login.php?pid=search_room&option=search_val\" method=\"post\">";
+    echo "<tr><td style=\"border-bottom: #FFFFFF\"><input name=\"search_val\" type=\"text\" size=50 placeholder=\"Search by Type, Room Id.\"></td>";
+    echo "<td style=\"border-bottom: #FFFFFF\"><input type=\"image\" name=\"commit\" value=\"submit\" src=\"images/search_button.gif\" style=\"height:30px\"></td></tr>";
+    echo "</form></table>";
+    if(isset($_GET['option']) && strcmp($_GET['option'],"search_val")==0) {
+        $search=$_POST['search_val'];
+        if(!empty($search) && ($search[0]=='Z' || $search[0]=='z')) {
+            $result=mysqli_query($link, "select * from Room where Room_No='$search'");
+            if(mysqli_num_rows($result)==1) {
+                echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
+                $val=mysqli_fetch_array($result);
+                $reg=$val['Room_No'];
+                $type=$val['Type'];
+                $ext=$val['Phone_Ext'];
+                $cost=$val['Rent'];
+                echo " <h3> Room Details </h3> ";
+                echo "<table border=0 cellpadding=1 cellspacing=0 style=\"margin:5px 0px 0px -3px;\">";
+                echo "<tr><td width=5%>Room No: </td><td width=50%>$reg</td></tr>";
+                echo "<tr><td>Type: </td><td>$type</td></tr>";
+                echo "<p align=\"left\"><tr><td>Extension: </td><td>$ext</td></tr>";
+                echo "<tr><td>Rent: </td><td>$cost</td></tr>";
+                echo "</table>";
+            }
+            else {
+                echo "<br/> <br/>";
+                echo "<script type=\"text/javascript\">alert(\"Room not found\") </script>";
+            }
+        }
+        else if(!empty($search) && ($search[0]!='Z' || $search[0]!='z')) {
+            $result=mysqli_query($link, "select * from Room where Type='$search'");
+            if(mysqli_num_rows($result)==1) {
+                echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
+                $val=mysqli_fetch_array($result);
+                $reg=$val['Room_No'];
+                $type=$val['Type'];
+                $ext=$val['Phone_Ext'];
+                $cost=$val['Rent'];
+                echo " <h3> Room Details </h3> ";
+                echo "<table border=0 cellpadding=1 cellspacing=0 style=\"margin:5px 0px 0px -3px;\">";
+                echo "<tr><td width=5%>Room No: </td><td width=50%>$reg</td></tr>";
+                echo "<tr><td>Type: </td><td>$type</td></tr>";
+                echo "<p align=\"left\"><tr><td>Extension: </td><td>$ext</td></tr>";
+                echo "<tr><td>Rent: </td><td>$cost</td></tr>";
+                echo "</table>";
+            }
+            else if(mysqli_num_rows($result)>=1) {
+                echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
+                echo "<div style=\"width:900px; float:left;\">";
+                for($i=0;$i<mysqli_num_rows($result);$i=$i+1) {
+                    $val=mysqli_fetch_array($result);
+                    $reg=$val['Room_No'];
+                    $type=$val['Type'];
+                    echo "<div style=\"width:900px; float:left;\">";
+                    echo "<h3 align=\"left\"><a href=\"?pid=room_details&id=$reg\">$reg</a></h3>";
+                    echo "<p align=\"left\"><b>Type:</b> $type<br/> ";
+                    echo "</div>";
+                }
+            }
+            else {
+                echo "<br/> <br/>";
+                echo "<script type=\"text/javascript\">alert(\"Room not found\") </script>";
+            }
+        }
+        else
+            echo "<script type=\"text/javascript\">alert(\"Please enter value\") </script>";
+    }
+}
+
 // Allot Room
+else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"allot_room")==0)) {
+    echo("<h3> Room Allotment </h3>");
+    echo("<form align=\"centre\" #action=\"#\" method =\"post\">");
+    echo("<table><tr><td><b>Room Type:</b></td><td><select name=\"type\"><option value=\"GEN\">General</option><option value =\"SEMI\">Semi-Private</option><option value=\"PRI\">Private</option><option value=\"ICU\">ICU</option></select></td></tr>");
+    echo("<tr><td><b>Patient ID:</b></td><td><input type=\"text\" name=\"id\"/required ></td></tr>");
+    echo("<tr><td><b>Allotment(Today's)Date:</b></td><td><input type=\"date\" name=\"date\"/placeholder=\"yyyy-mm-dd\"required ></td></tr>");
+    echo("</table>");
+    echo("<input type=\"submit\" name=\"commit\" value=\"Submit\" style=\"height:25px\" title=\"Click here to submit\">");
+    echo("</form>");
+    if((!empty($_POST["type"]))&&(!empty($_POST["id"]))&&(!empty($_POST["date"]))) {
+        $type=$_POST["type"];
+        $id=$_POST["id"];
+        $date=$_POST["date"];
+        $res1=mysqli_query($link, "select * from Patients where Patient_ID='$id';");
+        if(mysqli_num_rows($res1)==0) {
+            echo "<script type=\"text/javascript\">alert(\"Invalid Patient ID\")</script>";
+        }
+        else {
+           	$ch=mysqli_query($link, "select * from Attends where Patient_ID = '$id'");
+           	if(mysqli_num_rows($ch) == 0){
+                echo "<script type=\"text/javascript\">alert(\"Patient has not been assigned a doctor. Cannot allocate Room. \")</script>";
+                echo "  <script type=\"text/javascript\">
+                            window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=allot_room\"</script>";
+            }
+           	$ch=mysqli_query($link, "select * from Assigned where Patient_ID = '$id'");
+           	if(mysqli_num_rows($ch) > 0){
+                echo "<script type=\"text/javascript\">alert(\"Patient has already been allocated a room. Cannot allocate room. \")</script>";
+                echo "  <script type=\"text/javascript\">
+                            window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=allot_room\"</script>";
+            }
+            $res2=mysqli_query($link, "select * from Room where (Type='$type');");
+            if(mysqli_num_rows($res2)!=0) {
+                $row=mysqli_fetch_array($res2);
+                $r_no=$row['Room_No'];
+                mysqli_query($link, "insert into Assigned values (\"$id\",\"$r_no\");");
+                mysqli_query($link, "update Patients SET D_Adm=\"$date\";");
+                echo("Alloted Succesfully <br/> Room No.= ");
+                echo($r_no);
+            }
+            else
+                echo "<script type=\"text/javascript\">alert(\"No Vacancy\")</script>";
+        }
+    }
+}
 
 // Unallot Room
+else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"unallot_room")==0)) {
+    echo("<h2 align=\"centre\"><u> Room Un-Allotment </u></h1>");
+    echo("<form align=\"centre\" #action=\"#\" method =\"post\">");
+    echo("<table><tr><td><h4>Room Number:</h4></td><td><input type=\"text\" name=\"room\"/required ></td></tr>");
+    echo("<table><tr><td><h4>Discharge Date:</h4></td><td><input type=\"text\" name=\"date\" placeholder=\"YYYY-MM-DD\" required ></td></tr>");
+    echo("<tr><td style=\"border-bottom: #FFFFFF\"><input type=\"submit\" name=\"commit\" value=\"Unallot\" style=\"height:25px\" title=\"Click here to submit\"></td></tr>");
+    echo("</table></form>");
+    if((!empty($_POST["room"]))&&(!empty($_POST["date"]))) {
+        $room=$_POST["room"];
+        $date=$_POST["date"];
+        $res=mysqli_query($link, "select * from Assigned where Room_No='$room';");
+        $row=mysqli_fetch_array($res);
+        $patid=$row['Patient_ID'];
+        if(mysqli_num_rows($res)==0)
+            echo "<script type=\"text/javascript\">alert(\"Can't Unallot !! \\nEntered room is invalid or currently vacant\")</script>";
+    	$res=mysqli_query($link, "select * from Patients where Patient_ID=\"$patid\";");
+    	$row=mysqli_fetch_array($res);  
+    	$allot_date=$row['D_Adm'];
+        if(strcmp($allot_date,$date)>0)
+            echo "<script type=\"text/javascript\">alert(\"Entered Return Date is invalid !! It must be after allotment date\")</script>";
+        else {
+            mysqli_query($link, "delete from Assigned where Room_No='$room';");
+            mysqli_query($link, "update Patients set D_Dis='$date' where Patient_ID=\"$patid\";");
+        }
+    }
+}
 
-// Create Report MOST IMPORTANT TAB
+// Allotment Details
+if(isset($_GET['pid']) && strcmp($_GET['pid'],"alloted_room") == 0) {
+    echo "<h3>Room Allotment</h3> ";
+    echo "<table border=0 cellpadding=1 cellspacing=1 height=5 style=\"\"><form action=\"login.php?pid=alloted_room&option=search_val\" method=\"post\">";
+    echo "<tr><td style=\"border-bottom: #FFFFFF\"><input name=\"search_val\" type=\"text\" size=50 placeholder=\"Search by Type, Room Id.\"></td>";
+    echo "<td style=\"border-bottom: #FFFFFF\"><input type=\"image\" name=\"commit\" value=\"submit\" src=\"images/search_button.gif\" style=\"height:30px\"></td></tr>";
+    echo "</form></table>";
+    if(isset($_GET['option']) && strcmp($_GET['option'],"search_val")==0) {
+        $search=$_POST['search_val'];
+        if((!empty($search)) && ($search[0]=='Z' || $search[0]=='z')) {
+            $find=mysqli_query($link, "select * from Room where Room_No='$search'");
+            if(mysqli_num_rows($find)==0)
+                echo "<script type=\"text/javascript\">alert(\"Room not found!\") </script>";
+            else {
+                $result=mysqli_query($link, "select * from Assigned where Room_No='$search'");
+                if(mysqli_num_rows($result)==0) {
+                    echo "<script type=\"text/javascript\">alert(\"Room not alloted!\") </script>";
+                }
+                else {
+                    if((!empty($result) && mysqli_num_rows($result)==1)) {
+                        echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
+                        $val=mysqli_fetch_array($result);
+                        $room=$val['Room_No'];
+                        $id=$val['Patient_ID'];
+                        $res=mysqli_query($link, "select * from Patients where Patient_ID=\"$id\";");
+                        $row=mysqli_fetch_array($res);
+                        $ad=$row['D_Adm'];
+                        $rd=$row['D_Dis'];
+                        $rent=mysqli_query($link, "select Rent from Room where Room_No='$search'");
+                        $price=mysqli_fetch_array($rent);
+                        $cost=$price['Rent'];
 
-// Modify Report
+                        echo " <h3> Room Allotment History</h3> ";
+                        echo "<table border=0 cellpadding=1 cellspacing=0 style=\"margin:5px 0px 0px -3px;\">";
+                        echo "<tr><td width=10%>Room No: </td><td width=50%>$room</td></tr>";
+                        echo "<tr><td>Patient Id: </td><td>$id</td></tr>";
+                        echo "<p align=\"left\"><tr><td>Allotment Date: </td><td>$ad</td></tr>";
+                        echo "<tr><td>Discharge Date: </td><td>$rd</td></tr>";
+                        echo "<tr><td>Rent: </td><td>$cost</td></tr>";
+                        echo "</table>";
+                    }
+                    else if(!empty($result) && (mysqli_num_rows($result)>1)) {
+                        echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
+                        echo "<div style=\"width:900px; float:left;\">";
+                        for($i=0;$i<mysqli_num_rows($result);$i=$i+1) {
+                            $val=mysqli_fetch_array($result);
+                            $room=$val['Room_No'];
+                            $id=$val['Patient_ID'];
+                            $res=mysqli_query($link, "select * from Patients where Patient_ID=\"$id\";");   
+                            $row=mysqli_fetch_array($res);
+                            $ad=$row['D_Adm'];
+                            $rd=$row['D_Dis'];
+                            echo "<div style=\"width:900px; float:left;\">";
+                            echo "<h3 align=\"left\"><a href=\"?pid=room_al&id=$id&room=$room&ad=$ad&rd=$rd\">$room</a></h3>";										
+                            echo "<div style=\"width:900px; float:left;\">";
+                            echo "</div>";
+                        }
+                    }
+                }	
+            }
+        }
+        else if((!empty($search)) && ($search[0]!='Z' || $search[0]!='z')) {
+            $find=mysqli_query($link, "select * from Room where Type='$search'");
+            if(mysqli_num_rows($find)==0)
+                echo "<script type=\"text/javascript\">alert(\"Room not found!\") </script>";
+            else {
+                $result=mysqli_query($link, "select * from Room a,Assigned b where a.Type='$search' and a.Room_No=b.Room_No");
+                if(mysqli_num_rows($result)==0) {
+                    echo "<script type=\"text/javascript\">alert(\"Room not alloted!\") </script>";
+                }
+                else {
+                    if((!empty($result) && mysqli_num_rows($result)==1)) {
+                        echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
+                        $val=mysqli_fetch_array($result);
+                        $room=$val['Room_No'];
+                        $id=$val['Patient_ID'];
+                        $res=mysqli_query($link, "select * from Patients where Patient_ID=\"$id\";");   
+                        $row=mysqli_fetch_array($res);
+                        $ad=$row['D_Adm'];
+                        $rd=$row['D_Dis'];
+                        $rent=mysqli_query($link, "select Rent from room where Room_No='$search'");
+                        $price=mysqli_fetch_array($rent);
+                        $cost=$price['Rent'];
+                        echo " <h3> Room Allotment History</h3> ";
+                        echo "<table border=0 cellpadding=1 cellspacing=0 style=\"margin:5px 0px 0px -3px;\">";
+                        echo "<tr><td width=10%>Room No: </td><td width=50%>$room</td></tr>";
+                        echo "<tr><td>Patient Id: </td><td>$id</td></tr>";
+                        echo "<p align=\"left\"><tr><td>Allotment Date: </td><td>$ad</td></tr>";
+                        echo "<tr><td>Discharge Date: &nbsp &nbsp</td><td>$rd</td></tr>";
+                        echo "<tr><td>Rent: </td><td>$cost</td></tr>";
+                        echo "</table>";
+                    }
+                    else if(!empty($result) && (mysqli_num_rows($result)>1)) {
+                        echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
+                        echo "<div style=\"width:900px; float:left;\">";
+                        echo " <h3> Select any room</h3> ";
+                        for($i=0;$i<mysqli_num_rows($result);$i=$i+1) {
+                            $val=mysqli_fetch_array($result);
+                            $room=$val['Room_No'];
+                            $id=$val['Patient_ID'];
+                            $res=mysqli_query($link, "select * from Patients where Patient_ID=\"$id\";");   
+                            $row=mysqli_fetch_array($res);
+                            $ad=$row['D_Adm'];
+                            $rd=$row['D_Dis'];
+                            echo "<div style=\"width:900px; float:left;\">";
+                            echo "<h3 align=\"left\"><a href=\"?pid=room_al&id=$id&room=$room&ad=$ad&rd=$rd\">$reg</a></h3>";
+                            echo "</div>";
+                        }
+                    }
+                }	
+            }
+        }
+        else
+            echo "<script type=\"text/javascript\">alert(\"Enter Value!\") </script>";
+    }
+}
+
+// Generate Report MOST IMPORTANT TAB
+else if(isset($_GET['pid']) && strcmp($_GET['pid'],"create_report") == 0) {
+    echo "<h1>Generate Bill</h1>";
+    echo "<form name=\"form\" method=\"post\" action=\"login.php?pid=create_report\">";
+    echo "<table>";
+    echo "<td><p>Patient ID: &nbsp &nbsp <input type=\"text\" name=\"PID\" size=\"45\" placeholder = \"Enter valid Patient_ID\" maxlength=\"45\" required/>  <input type=\"submit\" name=\"submit\" value=\"Generate\" style=\"float:right;\">";
+    echo "</tr>";
+    echo "</form>";
+    if(isset($_POST['PID'])) {
+        $patid=$_POST['PID'];
+        $result=mysqli_query($link, "select Name, D_Adm, D_Dis, floor(DATEDIFF(D_Dis,D_Adm)) as diff from Patients where Patient_ID='$patid'");
+        echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
+    	if(mysqli_num_rows($result) < 1){
+    		echo "<script type=\"text/javascript\">alert(\"Patient doesn't exist\")</script>";
+    		echo "  <script type=\"text/javascript\">
+                   		window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=view_report\"</script>";
+    	}
+        $row=mysqli_fetch_array($result);
+        $name=$row['Name'];
+        $adate=$row['D_Adm'];
+        $ddate=$row['D_Dis'];
+    	$diff=$row['diff'];
+    	$res1=mysqli_query($link, "select A.Room_No, R.Type, R.Rent from Assigned as A, Room as R where A.Patient_ID='$patid' AND A.Room_No=R.Room_No");
+        $row2=mysqli_fetch_array($res1);
+    	if(mysqli_num_rows($res1) < 1) {
+            echo "<script type=\"text/javascript\">alert(\"No Room alloted.\")</script>";
+    		$flag = 1;
+    		$room="N/A";
+    		$roomt="N/A";
+    		$rent=0;
+        }
+    	else {
+    		$room=$row2['Room_No'];
+    		$roomt=$row2['Type'];
+    		$rent=$row2['Rent'];
+    	}
+    	$res1=mysqli_query($link, "select Dept.Name, Dept.Dept_charges, E.Name as Doc from Doctors as D,Employee as E,Departments as Dept, Attends as At where At.Patient_ID ='$patid' AND At.Doc_ID = D.Doc_ID AND D.Employee_ID = E.Employee_ID AND E.Dept_ID = Dept.Dept_ID;");
+        $row3=mysqli_fetch_array($res1);
+    	$dname=$row3['Name'];
+    	$dchar=$row3['Dept_charges'];
+	    $docname=$row3['Doc'];
+        $date=date("Y-m-d");
+    	$num=rand(10,100);
+    	$days=$diff;
+    	$days=$days+1;
+    	$nrent=$rent*$days;
+        $nchar=$nrent+$dchar;
+    	$cgst=$nchar*0.09;
+    	$sgst=$nchar*0.09;
+    	$total=$nchar+$cgst+$sgst;
+        echo "<h3>BILL</h3>";
+        echo "<table border=0 cellpadding=1 cellspacing=0 style=\"margin:5px 0px 0px -3px;border-collapse: collapse;\">";
+        echo "<tr><td width=20%>Bill No: </td><td width=50%>$num</td></tr>";
+        echo "<tr><td>Date: </td><td>$date</td></tr>";
+        echo "<tr><td>Patient ID: </td><td>$patid</td></tr>";
+        echo "<tr><td>Patient Name: </td><td>$name</td></tr>";
+        echo "<tr><td>Room No.: </td><td>$room</td></tr>";
+        echo "<tr><td>Room Type: </td><td>$roomt</td></tr>";
+        echo "<tr><td>Allotment Date: </td><td>$adate</td></tr>";
+        echo "<tr><td>Discharge Date: </td><td>$ddate</td></tr>";
+        echo "<tr><td>Days Admitted: </td><td>$days</td></tr>";
+        echo "<tr><td>Rent/Day: </td><td>$rent</td></tr>";
+        echo "<tr><td>Net Room Rent: </td><td>$nrent</td></tr>";
+        echo "<tr><td>Department: </td><td>$dname</td></tr>";
+        echo "<tr><td>Department Charges: </td><td>$dchar</td></tr>";
+    	
+        echo "<tr><td>Net Charges: </td><td>$nchar</td></tr>";
+        echo "<tr><td>CGST 9%: </td><td>$cgst</td></tr>";
+        echo "<tr><td>SGST 9%: </td><td>$sgst</td></tr>";
+        echo "<tr><td><b>Total Charges:</b> </td><td><b>$total</b></td></tr>";
+    }
+}
+
 
 // View Report
-
-// Delete Report
+else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"view_report")==0)||(strcmp($_GET['pid'],"patient_report")==0))) {
+    echo "<h1>Generate Report</h1>";
+    echo "<form action=\"login.php?pid=view_report\" method=\"post\">";
+    echo "<table border=0 cellpadding=2 cellspacing=0>";
+    echo "<tr><td>Patient ID:  &nbsp&nbsp<input name=\"PID\" type=\"text\" size=50 placeholder=\"Enter Valid Patient_ID\">&nbsp&nbsp&nbsp&nbsp";
+    echo "<input type=\"submit\" name=\"gen\" value=\"Generate\" title=\"Click here to generate Report\"></tr>";	
+    echo "</table></form>";
+    if(isset($_POST['PID'])) {
+        $patid=$_POST['PID'];
+        $result=mysqli_query($link, "select * from Patients where Patient_ID='$patid'");
+        echo "<div><link rel=\"stylesheet\" href=\"css/style01.css\">";
+		if(mysqli_num_rows($result) < 1){
+			echo "<script type=\"text/javascript\">alert(\"Patient doesn't exist\")</script>";
+			echo "  <script type=\"text/javascript\">
+               		      window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=view_report\"</script>";
+		}
+        $row=mysqli_fetch_array($result);
+        $name=$row['Name'];
+        $dob=$row['DOB'];
+        $gender=$row['Gender'];
+        $bg=$row['Blood_Group'];
+        $adate=$row['D_Adm'];
+        $ddate=$row['D_Dis'];
+        $res1=mysqli_query($link, "select * from Attends where Patient_ID='$patid'");
+        $row1=mysqli_fetch_array($res1);
+		if(mysqli_num_rows($res1) < 1){
+            echo "<script type=\"text/javascript\">alert(\"No Doctor Assigned. Cannot generate report.\")</script>";
+            echo "  <script type=\"text/javascript\">
+                        window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=view_patient\"</script>";
+        }
+    	$docid=$row1['Doc_ID'];
+	    $res1=mysqli_query($link, "select A.Room_No, R.Type from Assigned as A, Room as R where A.Patient_ID='$patid' AND A.Room_No=R.Room_No");
+        $row2=mysqli_fetch_array($res1);
+	    if(mysqli_num_rows($res1) < 1){
+            echo "<script type=\"text/javascript\">alert(\"No Room alloted.\")</script>";
+            $flag = 1;
+            $room="N/A";
+            $roomt="N/A";
+        }
+        else {
+            $room=$row2['Room_No'];
+            $roomt=$row2['Type'];
+        }
+	    $res1=mysqli_query($link, "select Dept.Name, Dept.Dept_charges, E.Name as Doc from Doctors as D,Employee as E,Departments as Dept where D.Doc_ID='$docid' AND D.Employee_ID = E.Employee_ID AND E.Dept_ID = Dept.Dept_ID;");
+        $row3=mysqli_fetch_array($res1);
+    	$dname=$row3['Name'];
+    	$dchar=$row3['Dept_charges'];
+    	$docname=$row3['Doc'];
+    	$date=date("Y-m-d");
+    	$num=rand(10,100);
+        echo "<h3>Patient Report</h3>";
+        echo "<table border=0 cellpadding=1 cellspacing=0 style=\"margin:5px 0px 0px -3px;border-collapse: collapse;\">";
+        echo "<tr><td width=20%>Report No: </td><td width=50%>$num</td></tr>";
+        echo "<tr><td>Date: </td><td>$date</td></tr>";
+        echo "<tr><td>Patient ID: </td><td>$patid</td></tr>";
+        echo "<tr><td>Patient Name: </td><td>$name</td></tr>";
+        echo "<tr><td>Date of Birth: </td><td>$dob</td></tr>";
+        echo "<tr><td>Gender: </td><td>$gender</td></tr>";
+        echo "<tr><td>Blood Group: </td><td>$bg</td></tr>";
+        echo "<tr><td>Department: </td><td>$dname</td></tr>";
+        echo "<tr><td>Admitted Under: </td><td>Dr.$docname</td></tr>";
+        echo "<tr><td>Room No.: </td><td>$room</td></tr>";
+        echo "<tr><td>Room Type: </td><td>$roomt</td></tr>";
+        echo "<tr><td>Allotment Date: </td><td>$ddate</td></tr>";
+        echo "<tr><td>Discharge Date: </td><td>$ddate</td></tr>";
+        $flag=1;
+    }
+}
 
 // Logout Session
 else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"logout")==0)) {
