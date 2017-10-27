@@ -536,7 +536,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"del_emp")==0))) {
                 mysqli_query($link, "delete from Employee where Employee_ID='$id'; ");
             echo "Employee Deleted!";
             echo "  <script type=\"text/javascript\">
-                         window.location = \"http://localhost/Hospital-Management-System/login.php?pid=del_emp\"
+                         window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=del_emp\"
                     </script>";
         }
         else {
@@ -566,7 +566,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"mod_emp")==0))) {
             mysqli_query($link, "update Employee SET Name=\"$name\", Address=\"$address\", DOB=\"$dob\", Contact=\"$contact\", Gender=\"$gender\", Salary=\"$salary\" where Employee_ID=\"$id\" ");
             echo "<h3>Employee Updated!</h3>";
             echo "  <script type=\"text/javascript\">
-                         window.location = \"http://localhost/Hospital-Management-System/login.php?pid=mod_emp\"
+                         window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=mod_emp\"
                     </script>";
         }
         else if(isset($_GET['option'])&&(strcmp($_GET['option'],"mod_form")==0)) {
@@ -636,7 +636,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"add_patient")==0))) {
             mysqli_query($link, "insert into Patients value (\"$id\", \"$name\", \"$address\", \"$dob\", \"$contact\", \"$gender\", \"$doa\", \"$dod\",  \"$bg\")");
             echo "<b>New Patient Added!</b>";
             echo "  <script type=\"text/javascript\">
-                         window.location = \"http://localhost/Hospital-Management-System/login.php?pid=view_patient\"
+                         window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=view_patient\"
                     </script>";
         }
         else
@@ -668,7 +668,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"del_patient")==0))) {
             mysqli_query($link, "delete from Patients where Patient_ID='$id'; ");
         echo "<b>Patient Deleted!</b>";
         echo "  <script type=\"text/javascript\">
-                     window.location = \"http://localhost/Hospital-Management-System/login.php?pid=view_patient\"
+                     window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=view_patient\"
                 </script>";
     }
     else {
@@ -697,7 +697,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"mod_patient")==0))) {
         mysqli_query($link, "update Patients SET Name=\"$name\", Address=\"$address\", DOB=\"$dob\", Contact=\"$contact\", Gender=\"$gender\", Blood_Group=\"$bg\", D_Adm=\"$doa\", D_Dis=\"$dod\" where Patient_ID=\"$id\" ");
         echo "<b>Patient Modified!</b>";
         echo "  <script type=\"text/javascript\">
-                     window.location = \"http://localhost/Hospital-Management-System/login.php?pid=view_patient\"
+                     window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=view_patient\"
                 </script>";
     }
     else if(isset($_GET['option'])&&(strcmp($_GET['option'],"mod_form")==0)) {
@@ -1003,7 +1003,7 @@ else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"del_dept")==0)) {
             mysqli_query($link, "delete from Departments where Dept_ID='$d_id';");
             echo "<b>Department Deleted!</b>";
             echo "  <script type=\"text/javascript\">
-                         window.location = \"http://localhost/Hospital-Management-System/login.php?pid=view_dept\"
+                         window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=view_dept\"
                     </script>";
         }
         else
@@ -1034,7 +1034,7 @@ else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"add_dept")==0)) {
             mysqli_query($link, "insert into Departments value (\"$n\", \"$p\", \"$i\", \"$c\");");
             echo "<b>Department Added!</b>";
             echo "  <script type=\"text/javascript\">
-                         window.location = \"http://localhost/Hospital-Management-System/login.php?pid=view_dept\"
+                         window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=view_dept\"
                     </script>";
         }
         else
@@ -1052,7 +1052,7 @@ else if(isset($_GET['pid'])&&((strcmp($_GET['pid'],"mod_dept")==0))) {
         mysqli_query($link, "update Departments SET Name=\"$name\", Phone_Ext=\"$ph\", Dept_charges=\"$ch\" where Dept_ID=\"$id\";");
         echo "<b>Department Updated!</b>";
         echo "  <script type=\"text/javascript\">
-                    window.location = \"http://localhost/Hospital-Management-System/login.php?pid=view_dept\"
+                    window.location = \"http://localhost/DBMS_Hospital_Management_System/login.php?pid=view_dept\"
                 </script>";
     }
     else if(isset($_GET['option'])&&(strcmp($_GET['option'],"mod_form")==0)) {
@@ -1660,7 +1660,7 @@ else if(isset($_GET['pid'])&&(strcmp($_GET['pid'],"logout")==0)) {
     if(mysqli_query($link, "select * from Session")) {
         $result=mysqli_query($link, "delete from Session");
         echo "  <script type=\"text/javascript\">
-                     window.location = \"http://localhost/Hospital-Management-System/index.php\"
+                     window.location = \"http://localhost/DBMS_Hospital_Management_System/index.php\"
                 </script>";
     }
     echo "</div>";
