@@ -80,23 +80,6 @@ if((isset($_GET['pid']))&&($_GET['pid']==02)) {
     <div id="signup">   
         <h1>Sign Up</h1>
         <form action="index.php?pid=02" method="post">
-    <!--
-        <div class="top-row">
-            <div class="field-wrap">
-            <label>
-                First Name<span class="req">*</span>
-            </label>
-            <input type="text" required autocomplete="off" />
-            </div>
-
-            <div class="field-wrap">
-            <label>
-                Last Name<span class="req">*</span>
-            </label>
-            <input type="text"required autocomplete="off"/>
-            </div>
-        </div>
-    -->
 
         <div class="field-wrap">
             <label>
@@ -119,7 +102,6 @@ if((isset($_GET['pid']))&&($_GET['pid']==02)) {
             <input type="password" name="conpasswd" required autocomplete="off"/>
         </div>
         <p class="submit"><input type="submit" name="commit" value="Create Account"></p>
-
     </form>
 </div>
 
@@ -147,49 +129,5 @@ if((isset($_GET['pid']))&&($_GET['pid']==02)) {
 
 <script src='http://cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js'></script> 
 <script  src="js/index.js"></script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<!--
-
-<h1><center>Hospital Management System</center></h1>
-  <section class="container">
-    <div class="login">
-      <h1>Login</h1>
-      <form method="post" action="index.php?pid=01">
-        <p><input class="tab active" type="text" name="login" value="" placeholder="Username"></p>
-        <p><input type="password" name="password" value="" placeholder="Password"></p>
-        <p class="remember_me">
-          <label>
-            <input type="checkbox" name="remember_me" id="remember_me">
-            Remember me on this computer
-          </label>
-        </p>
-        <p class="submit"><input type="submit" name="commit" value="Login"></p>
-      </form>
-    </div>
-
-  </section>
--->
 </body>
 </html>
